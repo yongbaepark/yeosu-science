@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>자석팽이</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #f0f4f9; color: #333; line-height: 1.6; }
+
+    section {
+      padding: 80px 20px;
+      max-width: 900px;
+      margin: auto;
+      border-bottom: 2px solid #ccc;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #1a3a6e;
+    }
+    .intro-img {
+      display: block;
+      max-width: 100%;
+      margin: 0 auto 20px;
+      border-radius: 10px;
+    }
+
+    .quiz {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+    .quiz.correct {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+    }
+    .quiz label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+    .quiz-result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: #999;
+    }
+
+ #sim-container {
+      position: relative;
+      width: 100%;
+      max-width: 90vw;
+      aspect-ratio: 9 / 4;
+      margin: 40px auto;
+      background-color: #fff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #iron {
+      position: absolute;
+      top: 39%;
+      left: 15%;
+      width: 53%;
+      height: 25%;
+      background: #666;
+      border-radius: 10px;
+    }
+    .mini {
+      width: 4.2%;
+      height: 3.5%;
+      background: linear-gradient(to right, red 50%, blue 50%);
+      position: absolute;
+      transition: transform 0.4s ease;
+    }
+    .row-1 { top: 43%; }
+    .row-2 { top: 49%; }
+    .row-3 { top: 55%; }
+    .mini:nth-child(2) { left: 20%; }
+    .mini:nth-child(3) { left: 28%; }
+    .mini:nth-child(4) { left: 36%; }
+    .mini:nth-child(5) { left: 44%; }
+    .mini:nth-child(6) { left: 52%; }
+    .mini:nth-child(7) { left: 60%; }
+    .mini:nth-child(8) { left: 20%; }
+    .mini:nth-child(9) { left: 28%; }
+    .mini:nth-child(10) { left: 36%; }
+    .mini:nth-child(11) { left: 44%; }
+    .mini:nth-child(12) { left: 52%; }
+    .mini:nth-child(13) { left: 60%; }
+    .mini:nth-child(14) { left: 20%; }
+    .mini:nth-child(15) { left: 28%; }
+    .mini:nth-child(16) { left: 36%; }
+    .mini:nth-child(17) { left: 44%; }
+    .mini:nth-child(18) { left: 52%; }
+    .mini:nth-child(19) { left: 60%; }
+    #magnet {
+      width: 14%;
+      height: 8.4%;
+      background: linear-gradient(to right, red 50%, blue 50%);
+      border: 2px solid #000;
+      position: absolute;
+      top: 48%;
+      left: 75%;
+      cursor: grab;
+      user-select: none;
+      z-index: 10;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(-45deg, #74ebd5, #acb6e5, #fbc2eb, #a6c1ee);
+      background-size: 600% 600%;
+      animation: gradientBG 10s ease infinite;
+      border-bottom: 4px solid #87a6f0;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    header h1 {
+      font-size: 1.5em;
+      color: #ffffff;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    header h2 {
+      font-size: 3.2em;
+      color: #0077cc;
+      margin-bottom: 10px;
+      font-weight: 800;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    header p {
+      font-size: 1.3em;
+      color: #fff;
+      font-weight: 600;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+  @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+  #make { display: none; }
+
+</style>
+</head>
+<body>
+  <header>
+    <h1>여수초등과학교과연구회</h1>
+    <h2>자석팽이</h2>
+    <p>- 자화가 무엇인지 알아보고 자석팽이를 만들어보자! -</p>
+    
+</header>
+
+  <section id="intro">
+    <h2>◈할아버지의 연장통에서 무슨 일이 있어났을까요?</h2>
+    <img src="동기유발.png" alt="할아버지의 마법 연장통" class="intro-img" />
+    <p style="text-align:center; font-size:1.1em;">
+      “망치는 자석이 아닌데 왜 못이 붙었을까요?<br/> 할아버지의 연장통에 어떤 마법이 있는 걸까요?”
+ 
+    </p>
+  </section>
+  <!-- 과학원리 -->
+  <section id="principle">
+    <h2>◈어떤 과학 원리가 숨어 있을까요?</h2>
+    <p><strong>자화란?</strong><br>
+자석이 가까이 오면 철, 니켈, 코발트 같은 물질 속의 '작은 자석들(자구)'이 자석의 방향에 따라 정렬되면서,
+    그 물체도 자석처럼 자기력을 가지게 되는 현상입니다. 이 과정을 <strong>'자화(magnetization)'</strong>라고 부릅니다.<br>
+    예를 들어, 클립에 자석을 가까이 하면 클립이 자석에 붙고, 그 클립에 또 다른 클립도 붙어요. 
+    이건 클립이 자화되어 잠시 자석처럼 된 것이랍니다.<br>
+    이렇게 자화가 쉽게 되는 철, 니켈, 코발트 같은 물질들을 <strong>강자성체</strong>라고 하며, 외부 자기장에 매우 강하게 반응합니다.
+</p>
+ <div id="sim-container">
+      <div id="iron"></div>
+      <div class="mini row-1"></div><div class="mini row-1"></div><div class="mini row-1"></div><div class="mini row-1"></div><div class="mini row-1"></div><div class="mini row-1"></div>
+      <div class="mini row-2"></div><div class="mini row-2"></div><div class="mini row-2"></div><div class="mini row-2"></div><div class="mini row-2"></div><div class="mini row-2"></div>
+      <div class="mini row-3"></div><div class="mini row-3"></div><div class="mini row-3"></div><div class="mini row-3"></div><div class="mini row-3"></div><div class="mini row-3"></div>
+      <div id="magnet"></div>
+    </div>
+  </section>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const magnet = document.getElementById("magnet");
+      const iron = document.getElementById("iron");
+      const minis = document.querySelectorAll(".mini");
+      let isDragging = false;
+      let offsetX, offsetY;
+      let lastTouching = false;
+
+      function setRandomRotation() {
+        minis.forEach(m => {
+          const angle = Math.floor(Math.random() * 360);
+          m.style.transform = `rotate(${angle}deg)`;
+        });
+      }
+
+      function isTouchingMagnetAndIron() {
+        const magnetRect = magnet.getBoundingClientRect();
+        const ironRect = iron.getBoundingClientRect();
+        return !(
+          magnetRect.right < ironRect.left ||
+          magnetRect.left > ironRect.right ||
+          magnetRect.bottom < ironRect.top ||
+          magnetRect.top > ironRect.bottom
+        );
+      }
+
+      function handleMove(x, y) {
+        const containerRect = iron.parentElement.getBoundingClientRect();
+        const relX = Math.max(0, Math.min(x - containerRect.left, containerRect.width));
+        const relY = Math.max(0, Math.min(y - containerRect.top, containerRect.height));
+
+        magnet.style.left = `${(relX / containerRect.width) * 100}%`;
+        magnet.style.top = `${(relY / containerRect.height) * 100}%`;
+
+        const isTouching = isTouchingMagnetAndIron();
+        if (isTouching && !lastTouching) minis.forEach(m => m.style.transform = "rotate(0deg)");
+        if (!isTouching && lastTouching) setRandomRotation();
+        lastTouching = isTouching;
+      }
+
+      setRandomRotation();
+
+      magnet.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - magnet.getBoundingClientRect().left;
+        offsetY = e.clientY - magnet.getBoundingClientRect().top;
+        magnet.style.cursor = "grabbing";
+      });
+      document.addEventListener("mouseup", () => { isDragging = false; magnet.style.cursor = "grab"; });
+      document.addEventListener("mousemove", (e) => { if (isDragging) handleMove(e.clientX - offsetX, e.clientY - offsetY); });
+
+      magnet.addEventListener("touchstart", (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        offsetX = touch.clientX - magnet.getBoundingClientRect().left;
+        offsetY = touch.clientY - magnet.getBoundingClientRect().top;
+      });
+      document.addEventListener("touchend", () => { isDragging = false; });
+      document.addEventListener("touchmove", (e) => {
+        if (isDragging) {
+          const touch = e.touches[0];
+          handleMove(touch.clientX - offsetX, touch.clientY - offsetY);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+  </section>
+
+  <!-- 확인문제 -->
+  <section id="quiz">
+  <h2>◈공부한 내용을 확인해 볼까요?</h2>
+  <div class="quiz" id="quiz1">
+    <p><strong class="question-label">Q1</strong> 다음 중 자화 현상은 어떤 경우에 일어날까요?</p>
+    <label><input type="radio" name="q1" value="wrong"> 나무에 자석을 가까이 했을 때</label>
+    <label><input type="radio" name="q1" value="correct"> 자석을 철에 가까이 했을 때</label>
+    <label><input type="radio" name="q1" value="wrong"> 자석을 플라스틱에 붙였을 때</label>
+    <div id="result1" class="quiz-result"></div>
+  </div>
+
+  <div class="quiz" id="quiz2" style="display:none">
+    <p><strong class="question-label">Q2</strong> 다음 중 자화된 물체는 어떤 특징이 생기나요?</p>
+    <label><input type="radio" name="q2" value="wrong"> 무거워져요</label>
+    <label><input type="radio" name="q2" value="correct"> 다른 물체를 끌어당겨요</label>
+    <label><input type="radio" name="q2" value="wrong"> 빛을 내요</label>
+    <div id="result2" class="quiz-result"></div>
+  </div>
+
+  <div class="quiz" id="quiz3" style="display:none">
+    <p><strong class="question-label">Q3</strong> 다음 중 자석이 멀어지면 자화된 물체는 어떻게 될까요?</p>
+    <label><input type="radio" name="q3" value="correct"> 다시 원래 상태로 돌아가요</label>
+    <label><input type="radio" name="q3" value="wrong"> 자석이 되어버려요</label>
+    <label><input type="radio" name="q3" value="wrong"> 부서져요</label>
+    <div id="result3" class="quiz-result"></div>
+  </div>
+
+  <div class="quiz" id="quiz4" style="display:none">
+    <p><strong class="question-label">Q4</strong> 다음 중 자화가 일어날 수 있는 물질은 무엇일까요?</p>
+    <label><input type="radio" name="q4" value="wrong"> 플라스틱</label>
+    <label><input type="radio" name="q4" value="correct"> 철</label>
+    <label><input type="radio" name="q4" value="wrong"> 유리</label>
+    <div id="result4" class="quiz-result"></div>
+  </div>
+</section>
+
+  
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const quizHandler = (name, correctValue, resultId, correctMsg, wrongMsg) => {
+        const radios = document.getElementsByName(name);
+        radios.forEach(radio => {
+          radio.addEventListener('change', () => {
+            const result = document.getElementById(resultId);
+            if (radio.value === correctValue) {
+              const label = document.querySelector(`#${resultId}`).closest('.quiz').querySelector('.question-label');
+              if (label) label.classList.add('correct-animation');
+              const audio = document.getElementById('correct-sound');
+              if (audio) audio.play();
+              result.textContent = correctMsg;
+              result.style.color = "green";
+              setTimeout(() => {
+                if (label) label.classList.remove('correct-animation');
+              }, 1000);
+            } else {
+              result.textContent = wrongMsg;
+              result.style.color = "red";
+            }
+          });
+        });
+      };
+
+      const showNext = (currentId, nextId) => {
+  document.getElementById(currentId).style.display = 'none';
+  document.getElementById(nextId).style.display = 'block';
+};
+
+quizHandler("q1", "correct", "result1", "정답입니다! 자석이 철에 가까워질 때 자화가 일어나요.", "다시 생각해보세요!");
+quizHandler("q2", "correct", "result2", "정답! 자화된 물체는 다른 것을 끌어당길 수 있어요.", "아쉬워요! 다시 골라보세요.");
+quizHandler("q3", "correct", "result3", "맞아요! 자석이 멀어지면 자화는 사라져요.", "조금 더 생각해봐요!");
+quizHandler("q4", "correct", "result4", "정답! 철은 자화가 가능한 물질이에요.", "플라스틱이나 유리는 자화되지 않아요.");
+const q4radios = document.getElementsByName("q4");
+q4radios.forEach(radio => {
+  radio.addEventListener("change", () => {
+    if (radio.value === "correct") {
+      setTimeout(() => {
+        document.getElementById("make").style.display = "block";
+        document.getElementById("make").scrollIntoView({ behavior: "smooth" });
+      }, 1000);
+    }
+  });
+});
+
+// 다음 문제로 넘어가기
+const q1radios = document.getElementsByName("q1");
+q1radios.forEach(radio => {
+  radio.addEventListener("change", () => {
+    if (radio.value === "correct") {
+      setTimeout(() => showNext("quiz1", "quiz2"), 1000);
+    }
+  });
+});
+
+const q2radios = document.getElementsByName("q2");
+q2radios.forEach(radio => {
+  radio.addEventListener("change", () => {
+    if (radio.value === "correct") {
+      setTimeout(() => showNext("quiz2", "quiz3"), 1000);
+    }
+  });
+});
+
+const q3radios = document.getElementsByName("q3");
+q3radios.forEach(radio => {
+  radio.addEventListener("change", () => {
+    if (radio.value === "correct") {
+      setTimeout(() => showNext("quiz3", "quiz4"), 1000);
+    }
+  });
+});
+      const q1 = document.getElementsByName('q1');
+      q1.forEach(radio => {
+        radio.addEventListener('change', () => {
+          const result = document.getElementById('result1');
+          if (radio.value === "correct") {
+            result.textContent = "정답입니다! 자화는 자석이 철 같은 물질에 가까워질 때 일어납니다.";
+            result.style.color = "green";
+          } else {
+            result.textContent = "다시 생각해보세요!";
+            result.style.color = "red";
+          }
+        });
+      });
+
+      const magnet = document.getElementById("magnet");
+      const iron = document.getElementById("iron");
+      const minis = document.querySelectorAll(".mini");
+
+      let isDragging = false;
+      let offsetX, offsetY;
+      let lastTouching = false;
+
+      function setRandomRotation() {
+        minis.forEach(m => {
+          const angle = Math.floor(Math.random() * 360);
+          m.style.transform = `rotate(${angle}deg)`;
+        });
+      }
+
+      setRandomRotation();
+
+      magnet.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - magnet.offsetLeft;
+        offsetY = e.clientY - magnet.offsetTop;
+        magnet.style.cursor = "grabbing";
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        magnet.style.cursor = "grab";
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+
+        magnet.style.left = `${x}px`;
+        magnet.style.top = `${y}px`;
+
+        const magnetRect = magnet.getBoundingClientRect();
+        const ironRect = iron.getBoundingClientRect();
+
+        const isTouching = !(
+          magnetRect.right < ironRect.left ||
+          magnetRect.left > ironRect.right ||
+          magnetRect.bottom < ironRect.top ||
+          magnetRect.top > ironRect.bottom
+        );
+
+        if (isTouching && !lastTouching) {
+          minis.forEach(m => {
+            m.style.transform = "rotate(0deg)";
+          });
+        }
+
+        if (!isTouching && lastTouching) {
+          setRandomRotation();
+        }
+
+        lastTouching = isTouching;
+      });
+    });
+    
+  </script>
+ <section id="make">
+  <h2>◈함께 체험해 볼까요?</h2>
+  <p style="text-align:center; font-size:1.1em;">
+    이제 자석팽이를 만들어 보면서 자화원리를 체험해 볼 시간이에요!
+  </p>
+
+  <div style="display:flex; justify-content:center; margin-top:30px;">
+    <iframe width="100%" height="400"
+            src="https://www.youtube.com/embed/VnWZc3k9gqg?start=16"
+            title="자석팽이 만들기"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            style="max-width: 720px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    </iframe>
+  </div>
+</section>
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const magnet = document.getElementById("magnet");
+      const iron = document.getElementById("iron");
+      const minis = document.querySelectorAll(".mini");
+
+      let isDragging = false;
+      let offsetX, offsetY;
+      let lastTouching = false;
+
+      function setRandomRotation() {
+        minis.forEach(m => {
+          const angle = Math.floor(Math.random() * 360);
+          m.style.transform = `rotate(${angle}deg)`;
+        });
+      }
+
+      setRandomRotation();
+
+      function isTouchingMagnetAndIron() {
+        const magnetRect = magnet.getBoundingClientRect();
+        const ironRect = iron.getBoundingClientRect();
+        return !(
+          magnetRect.right < ironRect.left ||
+          magnetRect.left > ironRect.right ||
+          magnetRect.bottom < ironRect.top ||
+          magnetRect.top > ironRect.bottom
+        );
+      }
+
+      function handleMove(x, y) {
+        magnet.style.left = `${x}px`;
+        magnet.style.top = `${y}px`;
+
+        const isTouching = isTouchingMagnetAndIron();
+        if (isTouching && !lastTouching) {
+          minis.forEach(m => m.style.transform = "rotate(0deg)");
+        }
+        if (!isTouching && lastTouching) {
+          setRandomRotation();
+        }
+        lastTouching = isTouching;
+      }
+
+      magnet.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - magnet.offsetLeft;
+        offsetY = e.clientY - magnet.offsetTop;
+        magnet.style.cursor = "grabbing";
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        magnet.style.cursor = "grab";
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        handleMove(e.clientX - offsetX, e.clientY - offsetY);
+      });
+
+      // 터치 지원 추가
+      magnet.addEventListener("touchstart", (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        offsetX = touch.clientX - magnet.offsetLeft;
+        offsetY = touch.clientY - magnet.offsetTop;
+      });
+
+      document.addEventListener("touchend", () => {
+        isDragging = false;
+      });
+
+      document.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        handleMove(touch.clientX - offsetX, touch.clientY - offsetY);
+      });
+    });
+  </script>
+
+
+  <footer>
+    © 2025 여수초등과학교과연구회 | 과학부스 체험
+  </footer>
+  
+    <script>
+    const correctAudio = new Audio("sound/correct.mp3");
+  correctAudio.preload = "auto";
+  correctAudio.volume = 1.0;
+
+  const wrongAudio = new Audio("sound/wrong.mp3");
+  wrongAudio.preload = "auto";
+  wrongAudio.volume = 1.0;
+
+  document.querySelectorAll('input[type="radio"]').forEach(input => {
+    input.addEventListener('click', () => {
+      const quiz = input.closest('.quiz');
+      const result = quiz.querySelector('.quiz-result');
+      if (input.value === 'correct') {
+        result.textContent = '정답입니다!';
+        result.style.color = 'green';
+        quiz.classList.add('correct');
+        correctAudio.pause();
+        correctAudio.currentTime = 0;
+        correctAudio.play().catch(err => {
+          console.warn("정답 사운드 재생 실패:", err);
+        });
+        setTimeout(() => quiz.classList.remove('correct'), 1000);
+      } else {
+        result.textContent = '다시 생각해보세요!';
+        result.style.color = 'red';
+        quiz.classList.remove('correct');
+        wrongAudio.pause();
+        wrongAudio.currentTime = 0;
+        wrongAudio.play().catch(err => {
+          console.warn("오답 사운드 재생 실패:", err);
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // 생략된 시뮬레이션 드래그 코드 유지
+
+      // 퀴즈 효과
+      document.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', () => {
+          const quiz = input.closest('.quiz');
+          const result = quiz.querySelector('.quiz-result');
+          if (input.value === 'correct') {
+            result.textContent = '정답입니다!';
+            result.style.color = 'green';
+            quiz.classList.add('correct');
+            document.getElementById('correct-sound').currentTime = 0;
+            document.getElementById('correct-sound').play();
+            setTimeout(() => quiz.classList.remove('correct'), 1000);
+          } else {
+            result.textContent = '다시 생각해보세요!';
+            result.style.color = 'red';
+            quiz.classList.remove('correct');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+
